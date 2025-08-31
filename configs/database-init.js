@@ -1,9 +1,19 @@
 const sequelize = require('./database');
 const User = require('../models/User');
+const Owner = require('../models/Owner');
+const Tenant = require('../models/Tenant');
+const Property = require('../models/Property');
+const PropertyAd = require('../models/PropertyAd');
+const PropertyJoinRequest = require('../models/PropertyJoinRequest');
 
 // Import all models here
 const models = {
-  User
+  User,
+  Owner,
+  Tenant,
+  Property,
+  PropertyAd,
+  PropertyJoinRequest
 };
 
 // Initialize database connection and sync models

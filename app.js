@@ -20,6 +20,8 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/protected', require('./routes/protected'));
+app.use('/api/property', require('./routes/property'));
+app.use('/api/property-ad', require('./routes/propertyAd'));
 
 // Initialize database and start server
 const startServer = async () => {

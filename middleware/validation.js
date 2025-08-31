@@ -258,10 +258,273 @@ const validate = (schema) => {
   };
 };
 
+/**
+ * Validate property creation/update data
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validateProperty = (req, res, next) => {
+  try {
+    const { name, address, coordinates, description, space_available, property_image, tags } = req.body;
+    const errors = [];
+
+    // Validate name
+    if (!name || typeof name !== 'string' || name.trim().length < 1) {
+      errors.push('Property name is required');
+    }
+
+    // Validate address
+    if (!address || typeof address !== 'string' || address.trim().length < 1) {
+      errors.push('Property address is required');
+    }
+
+    // Validate coordinates (optional)
+    if (coordinates) {
+      if (typeof coordinates !== 'object' || 
+          typeof coordinates.latitude !== 'number' || 
+          typeof coordinates.longitude !== 'number') {
+        errors.push('Coordinates must be an object with latitude and longitude as numbers');
+      }
+    }
+
+    // Validate space_available
+    if (space_available !== undefined) {
+      if (typeof space_available !== 'number' || space_available < 0) {
+        errors.push('Space available must be a non-negative number');
+      }
+    }
+
+    // Validate property_image (optional)
+    if (property_image && typeof property_image !== 'string') {
+      errors.push('Property image must be a string URL');
+    }
+
+    // Validate tags (optional)
+    if (tags && !Array.isArray(tags)) {
+      errors.push('Tags must be an array');
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors
+      });
+    }
+
+    // Sanitize data
+    req.body.name = name ? name.trim() : name;
+    req.body.address = address ? address.trim() : address;
+    req.body.description = description ? description.trim() : description;
+    req.body.space_available = space_available || 0;
+    req.body.tags = tags || [];
+
+    next();
+  } catch (error) {
+    console.error('Property validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
+/**
+ * Validate property ID parameter
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validatePropertyId = (req, res, next) => {
+  try {
+    const propertyId = parseInt(req.params.id);
+    
+    if (isNaN(propertyId) || propertyId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid property ID is required'
+      });
+    }
+
+    req.propertyId = propertyId;
+    next();
+  } catch (error) {
+    console.error('Property ID validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
+/**
+ * Validate join request data
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validateJoinRequest = (req, res, next) => {
+  try {
+    const { property_ad_id, move_in_date } = req.body;
+    const errors = [];
+
+    // Validate property_ad_id
+    if (!property_ad_id || isNaN(parseInt(property_ad_id))) {
+      errors.push('Valid property ad ID is required');
+    }
+
+    // Validate move_in_date (optional but if provided, should be valid date)
+    if (move_in_date) {
+      const date = new Date(move_in_date);
+      if (isNaN(date.getTime())) {
+        errors.push('Move-in date must be a valid date');
+      }
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors
+      });
+    }
+
+    // Sanitize data
+    req.body.property_ad_id = parseInt(property_ad_id);
+    req.body.move_in_date = move_in_date ? new Date(move_in_date) : null;
+
+    next();
+  } catch (error) {
+    console.error('Join request validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
+/**
+ * Validate property ad data
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validatePropertyAd = (req, res, next) => {
+  try {
+    const { property_id, number_of_spaces_looking_for, is_active } = req.body;
+    const errors = [];
+
+    // Validate property_id
+    if (!property_id || isNaN(parseInt(property_id))) {
+      errors.push('Valid property ID is required');
+    }
+
+    // Validate number_of_spaces_looking_for
+    if (!number_of_spaces_looking_for || isNaN(parseInt(number_of_spaces_looking_for)) || parseInt(number_of_spaces_looking_for) < 1) {
+      errors.push('Number of spaces looking for must be a positive number');
+    }
+
+    // Validate is_active (optional, defaults to true)
+    if (is_active !== undefined && typeof is_active !== 'boolean') {
+      errors.push('is_active must be a boolean value');
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors
+      });
+    }
+
+    // Sanitize data
+    req.body.property_id = parseInt(property_id);
+    req.body.number_of_spaces_looking_for = parseInt(number_of_spaces_looking_for);
+    req.body.is_active = is_active !== undefined ? is_active : true;
+
+    next();
+  } catch (error) {
+    console.error('Property ad validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
+/**
+ * Validate property ad ID parameter
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validatePropertyAdId = (req, res, next) => {
+  try {
+    const adId = parseInt(req.params.id);
+    
+    if (isNaN(adId) || adId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid property ad ID is required'
+      });
+    }
+
+    req.adId = adId;
+    next();
+  } catch (error) {
+    console.error('Property ad ID validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
+/**
+ * Validate join request response data
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const validateJoinRequestResponse = (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const errors = [];
+
+    // Validate status
+    if (!status || !['approved', 'rejected'].includes(status)) {
+      errors.push('Status must be approved or rejected');
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Join request response validation error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Validation error'
+    });
+  }
+};
+
 module.exports = {
   validateRegistration,
   validateLogin,
   validatePasswordUpdate,
   validateTokenRefresh,
+  validateProperty,
+  validatePropertyId,
+  validatePropertyAd,
+  validatePropertyAdId,
+  validateJoinRequest,
+  validateJoinRequestResponse,
   validate
 };

@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
-const Property = require('./Property');
 
 const PropertyAd = sequelize.define('PropertyAd', {
   id: {
@@ -36,6 +35,7 @@ const PropertyAd = sequelize.define('PropertyAd', {
   hooks: {
     beforeCreate: async (propertyAd) => {
       // Validate that number_of_spaces_looking_for is less than property's space_available
+      const Property = require('./Property');
       const property = await Property.findByPk(propertyAd.property_id);
       if (property && propertyAd.number_of_spaces_looking_for > property.space_available) {
         throw new Error('Number of spaces looking for cannot exceed available space in property');
@@ -43,6 +43,7 @@ const PropertyAd = sequelize.define('PropertyAd', {
     },
     beforeUpdate: async (propertyAd) => {
       if (propertyAd.changed('number_of_spaces_looking_for')) {
+        const Property = require('./Property');
         const property = await Property.findByPk(propertyAd.property_id);
         if (property && propertyAd.number_of_spaces_looking_for > property.space_available) {
           throw new Error('Number of spaces looking for cannot exceed available space in property');
@@ -51,9 +52,5 @@ const PropertyAd = sequelize.define('PropertyAd', {
     }
   }
 });
-
-// Define association with Property model
-PropertyAd.belongsTo(Property, { foreignKey: 'property_id', as: 'property' });
-Property.hasMany(PropertyAd, { foreignKey: 'property_id', as: 'ads' });
 
 module.exports = PropertyAd;

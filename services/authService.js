@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Tenant = require('../models/Tenant');
+const Owner = require('../models/Owner');
 
 class AuthService {
   /**
@@ -23,6 +25,18 @@ class AuthService {
 
       // Create new user
       const user = await User.create(userData);
+      
+      // Create corresponding Tenant or Owner record based on role
+      if (user.role === 'tenant') {
+        await Tenant.create({
+          user_id: user.id
+        });
+      } else if (user.role === 'owner') {
+        await Owner.create({
+          user_id: user.id
+        });
+      }
+      // Note: 'admin' role doesn't need a separate record
       
       // Generate JWT token
       const token = this.generateToken(user);
@@ -104,7 +118,7 @@ class AuthService {
   /**
    * Get user by ID
    * @param {number} userId - User ID
-   * @returns {Object} - User object
+   * @returns {Object} - User object with profile data
    */
   async getUserById(userId) {
     try {
@@ -112,7 +126,27 @@ class AuthService {
       if (!user) {
         throw new Error('User not found');
       }
-      return user.toJSON();
+
+      let userData = user.toJSON();
+
+      // Include Tenant or Owner profile data based on role
+      if (user.role === 'tenant') {
+        const tenant = await Tenant.findOne({
+          where: { user_id: userId }
+        });
+        if (tenant) {
+          userData.tenant_profile = tenant;
+        }
+      } else if (user.role === 'owner') {
+        const owner = await Owner.findOne({
+          where: { user_id: userId }
+        });
+        if (owner) {
+          userData.owner_profile = owner;
+        }
+      }
+
+      return userData;
     } catch (error) {
       throw error;
     }

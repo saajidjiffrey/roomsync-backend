@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
-const User = require('./User');
 
 const Owner = sequelize.define('Owner', {
   id: {
@@ -23,9 +22,5 @@ const Owner = sequelize.define('Owner', {
   tableName: 'owners',
   timestamps: true
 });
-
-// Define association with User model
-Owner.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-User.hasOne(Owner, { foreignKey: 'user_id', as: 'owner' });
 
 module.exports = Owner;

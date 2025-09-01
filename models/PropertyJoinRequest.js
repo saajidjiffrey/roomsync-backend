@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../configs/database');
-const Property = require('./Property');
-const Tenant = require('./Tenant');
 
 const PropertyJoinRequest = sequelize.define('PropertyJoinRequest', {
   id: {
@@ -48,12 +46,5 @@ const PropertyJoinRequest = sequelize.define('PropertyJoinRequest', {
     }
   ]
 });
-
-// Define associations
-PropertyJoinRequest.belongsTo(PropertyAd, { foreignKey: 'property_ad_id', as: 'propertyAd' });
-PropertyJoinRequest.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
-
-PropertyAd.hasMany(PropertyJoinRequest, { foreignKey: 'property_ad_id', as: 'joinRequests' });
-Tenant.hasMany(PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'propertyRequests' });
 
 module.exports = PropertyJoinRequest;

@@ -18,25 +18,14 @@ const models = {
 
 // Define associations after all models are loaded
 const defineAssociations = () => {
-  // User associations
-  User.hasOne(Owner, { foreignKey: 'user_id', as: 'ownerProfile' });
-  User.hasOne(Tenant, { foreignKey: 'user_id', as: 'tenantProfile' });
-  Owner.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-  Tenant.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-
-  // Property associations
-  Owner.hasMany(Property, { foreignKey: 'owner_id', as: 'properties' });
-  Property.belongsTo(Owner, { foreignKey: 'owner_id', as: 'propertyOwner' });
-
-  // PropertyAd associations
-  Property.hasMany(PropertyAd, { foreignKey: 'property_id', as: 'ads' });
-  PropertyAd.belongsTo(Property, { foreignKey: 'property_id', as: 'property' });
-
-  // PropertyJoinRequest associations
-  PropertyAd.hasMany(PropertyJoinRequest, { foreignKey: 'property_ad_id', as: 'joinRequests' });
-  Tenant.hasMany(PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'propertyRequests' });
-  PropertyJoinRequest.belongsTo(PropertyAd, { foreignKey: 'property_ad_id', as: 'propertyAd' });
-  PropertyJoinRequest.belongsTo(Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+  // Call each model's associate method to define associations
+  Object.values(models).forEach(model => {
+    if (model.associate) {
+      model.associate(models);
+    }
+  });
+  
+  console.log('Model associations defined successfully.');
 };
 
 // Initialize database connection and sync models
@@ -53,7 +42,6 @@ const initializeDatabase = async () => {
       
       // Define associations
       defineAssociations();
-      console.log('Model associations defined successfully.');
       
       console.log('Syncing database models...');
       await sequelize.sync({ alter: true });

@@ -92,4 +92,11 @@ User.prototype.toJSON = function() {
   return values;
 };
 
+// Static method to define associations
+User.associate = function(models) {
+  // User associations
+  User.hasOne(models.Owner, { foreignKey: 'user_id', as: 'ownerProfile' });
+  User.hasOne(models.Tenant, { foreignKey: 'user_id', as: 'tenantProfile' });
+};
+
 module.exports = User;

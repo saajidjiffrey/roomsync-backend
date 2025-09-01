@@ -77,4 +77,11 @@ const Property = sequelize.define('Property', {
   timestamps: true
 });
 
+// Static method to define associations
+Property.associate = function(models) {
+  // Property associations
+  Property.belongsTo(models.Owner, { foreignKey: 'owner_id', as: 'propertyOwner' });
+  Property.hasMany(models.PropertyAd, { foreignKey: 'property_id', as: 'ads' });
+};
+
 module.exports = Property;

@@ -23,4 +23,11 @@ const Tenant = sequelize.define('Tenant', {
   timestamps: true
 });
 
+// Static method to define associations
+Tenant.associate = function(models) {
+  // Tenant associations
+  Tenant.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+  Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'propertyRequests' });
+};
+
 module.exports = Tenant;

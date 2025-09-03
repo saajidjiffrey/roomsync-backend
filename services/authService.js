@@ -39,7 +39,7 @@ class AuthService {
       // Note: 'admin' role doesn't need a separate record
       
       // Generate JWT token
-      const token = this.generateToken(user);
+      const token = await this.generateToken(user);
       
       return {
         user: user.toJSON(),
@@ -74,7 +74,7 @@ class AuthService {
       }
 
       // Generate JWT token
-      const token = this.generateToken(user);
+      const token = await this.generateToken(user);
       
       return {
         user: user.toJSON(),
@@ -90,12 +90,29 @@ class AuthService {
    * @param {Object} user - User object
    * @returns {string} - JWT token
    */
-  generateToken(user) {
-    const payload = {
+  async generateToken(user) {
+    let payload = {
       id: user.id,
       email: user.email,
       role: user.role
     };
+
+    // Add tenant_id or owner_id based on role
+    if (user.role === 'tenant') {
+      const tenant = await Tenant.findOne({
+        where: { user_id: user.id }
+      });
+      if (tenant) {
+        payload.tenant_id = tenant.id;
+      }
+    } else if (user.role === 'owner') {
+      const owner = await Owner.findOne({
+        where: { user_id: user.id }
+      });
+      if (owner) {
+        payload.owner_id = owner.id;
+      }
+    }
 
     return jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN || '7d'
@@ -191,7 +208,7 @@ class AuthService {
     try {
       const decoded = this.verifyToken(token);
       const user = await this.getUserById(decoded.id);
-      const newToken = this.generateToken(user);
+      const newToken = await this.generateToken(user);
       
       return {
         user,

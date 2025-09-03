@@ -5,6 +5,10 @@ const Tenant = require('../models/Tenant');
 const Property = require('../models/Property');
 const PropertyAd = require('../models/PropertyAd');
 const PropertyJoinRequest = require('../models/PropertyJoinRequest');
+const Group = require('../models/Group');
+const Expense = require('../models/Expense');
+const Split = require('../models/Split');
+const Task = require('../models/Task');
 
 // Import all models here
 const models = {
@@ -13,7 +17,11 @@ const models = {
   Tenant,
   Property,
   PropertyAd,
-  PropertyJoinRequest
+  PropertyJoinRequest,
+  Group,
+  Expense,
+  Split,
+  Task
 };
 
 // Define associations after all models are loaded

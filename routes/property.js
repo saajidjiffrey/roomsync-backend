@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const propertyController = require('../controllers/propertyController');
 const { authenticateToken, requireOwnerOrAdmin, requireTenantOrAdmin } = require('../middleware/auth');
-const { validateProperty, validatePropertyId, validateJoinRequest, validateJoinRequestResponse } = require('../middleware/validation');
+const { 
+  validateProperty, 
+  validatePropertyId, 
+  validateJoinRequest, 
+  validateJoinRequestResponse 
+} = require('../middleware/validation');
 
 /**
  * @route   POST /api/property

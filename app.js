@@ -31,6 +31,10 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/protected', require('./routes/protected'));
 app.use('/api/property', require('./routes/property'));
 app.use('/api/property-ad', require('./routes/propertyAd'));
+app.use('/api/group', require('./routes/group'));
+app.use('/api/expense', require('./routes/expense'));
+app.use('/api/split', require('./routes/split'));
+app.use('/api/task', require('./routes/task'));
 
 // Initialize database and start server
 const startServer = async () => {

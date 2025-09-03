@@ -95,6 +95,66 @@ const requireOwnerOrAdmin = requireRole(['owner', 'admin']);
  */
 const requireTenantOrAdmin = requireRole(['tenant', 'admin']);
 
+/**
+ * Middleware to check if user is a tenant (for group/expense operations)
+ */
+const requireTenantForGroup = (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
+    if (req.user.role !== 'tenant') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only tenants can perform this operation'
+      });
+    }
+
+    if (!req.user.tenant_id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Tenant profile not found'
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Tenant group check error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
+/**
+ * Middleware to check if user belongs to a specific group
+ */
+const requireGroupMembership = (req, res, next) => {
+  try {
+    if (!req.user || req.user.role !== 'tenant') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only tenants can access group resources'
+      });
+    }
+
+    // This would need to be implemented based on your business logic
+    // For now, we'll just check if the user is a tenant
+    next();
+  } catch (error) {
+    console.error('Group membership check error:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+};
+
 module.exports = {
   authenticateToken,
   requireRole,
@@ -102,5 +162,7 @@ module.exports = {
   requireOwner,
   requireTenant,
   requireOwnerOrAdmin,
-  requireTenantOrAdmin
+  requireTenantOrAdmin,
+  requireTenantForGroup,
+  requireGroupMembership
 };

@@ -87,10 +87,10 @@ class PropertyJoinRequestService {
               as: 'property',
               include: [{
                 model: Owner,
-                as: 'owner',
+                as: 'propertyOwner',
                 include: [{
                   model: User,
-                  as: 'user',
+                  as: 'ownerUser',
                   attributes: ['id', 'full_name', 'email', 'phone_no']
                 }]
               }]
@@ -101,7 +101,7 @@ class PropertyJoinRequestService {
             as: 'tenant',
             include: [{
               model: User,
-              as: 'user',
+              as: 'tenantUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }
@@ -158,7 +158,7 @@ class PropertyJoinRequestService {
             as: 'tenant',
             include: [{
               model: User,
-              as: 'user',
+              as: 'tenantUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }
@@ -200,10 +200,10 @@ class PropertyJoinRequestService {
               as: 'property',
               include: [{
                 model: Owner,
-                as: 'owner',
+                as: 'propertyOwner',
                 include: [{
                   model: User,
-                  as: 'user',
+                  as: 'ownerUser',
                   attributes: ['id', 'full_name', 'email', 'phone_no']
                 }]
               }]

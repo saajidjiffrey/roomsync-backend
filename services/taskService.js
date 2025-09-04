@@ -57,7 +57,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -68,7 +68,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -141,7 +141,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -152,7 +152,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -208,7 +208,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -219,7 +219,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -275,7 +275,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -286,7 +286,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -463,7 +463,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]
@@ -508,7 +508,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email']
               }
             ]

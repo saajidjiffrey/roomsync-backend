@@ -46,7 +46,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -102,7 +102,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -187,7 +187,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]

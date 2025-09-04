@@ -33,7 +33,7 @@ class ExpenseService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -48,7 +48,7 @@ class ExpenseService {
                 include: [
                   {
                     model: User,
-                    as: 'user',
+                    as: 'tenantUser',
                     attributes: ['id', 'full_name', 'email', 'phone_no']
                   }
                 ]
@@ -80,7 +80,7 @@ class ExpenseService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -95,7 +95,7 @@ class ExpenseService {
                 include: [
                   {
                     model: User,
-                    as: 'user',
+                    as: 'tenantUser',
                     attributes: ['id', 'full_name', 'email', 'phone_no']
                   }
                 ]
@@ -165,7 +165,7 @@ class ExpenseService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]

@@ -36,13 +36,13 @@ const Tenant = sequelize.define('Tenant', {
 // Static method to define associations
 Tenant.associate = function(models) {
   // Tenant associations
-  Tenant.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
-  Tenant.belongsTo(models.Group, { foreignKey: 'group_id', as: 'group' });
-  Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id' });
-  Tenant.hasMany(models.Expense, { foreignKey: 'created_by' });
-  Tenant.hasMany(models.Split, { foreignKey: 'assigned_to' });
-  Tenant.hasMany(models.Task, { foreignKey: 'assigned_to' });
-  Tenant.hasMany(models.Task, { foreignKey: 'created_by' });
+  Tenant.belongsTo(models.User, { foreignKey: 'user_id', as: 'tenantUser' });
+  Tenant.belongsTo(models.Group, { foreignKey: 'group_id', as: 'tenantGroup' });
+  Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'joinRequests' });
+  Tenant.hasMany(models.Expense, { foreignKey: 'created_by', as: 'createdExpenses' });
+  Tenant.hasMany(models.Split, { foreignKey: 'assigned_to', as: 'assignedSplits' });
+  Tenant.hasMany(models.Task, { foreignKey: 'assigned_to', as: 'assignedTasks' });
+  Tenant.hasMany(models.Task, { foreignKey: 'created_by', as: 'createdTasks' });
 };
 
 module.exports = Tenant;

@@ -31,7 +31,7 @@ class GroupService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -60,7 +60,7 @@ class GroupService {
             include: [
               {
                 model: User,
-                as: 'user',
+                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -159,7 +159,7 @@ class GroupService {
         include: [
           {
             model: User,
-            as: 'user',
+            as: 'tenantUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }
         ]

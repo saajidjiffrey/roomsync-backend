@@ -72,10 +72,10 @@ class PropertyAdService {
           as: 'property',
           include: [{
             model: Owner,
-            as: 'owner',
+            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'user',
+              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -102,10 +102,10 @@ class PropertyAdService {
           as: 'property',
           include: [{
             model: Owner,
-            as: 'owner',
+            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'user',
+              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -229,10 +229,10 @@ class PropertyAdService {
           where: { owner_id: owner.id },
           include: [{
             model: Owner,
-            as: 'owner',
+            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'user',
+              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -273,10 +273,10 @@ class PropertyAdService {
           },
           include: [{
             model: Owner,
-            as: 'owner',
+            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'user',
+              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]

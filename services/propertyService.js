@@ -61,10 +61,10 @@ class PropertyService {
         where: whereClause,
         include: [{
           model: Owner,
-          as: 'owner',
+          as: 'propertyOwner',
           include: [{
             model: User,
-            as: 'user',
+            as: 'ownerUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }]
         }],
@@ -87,10 +87,10 @@ class PropertyService {
       const property = await Property.findByPk(propertyId, {
         include: [{
           model: Owner,
-          as: 'owner',
+          as: 'propertyOwner',
           include: [{
             model: User,
-            as: 'user',
+            as: 'ownerUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }]
         }]
@@ -200,10 +200,10 @@ class PropertyService {
         where: { owner_id: owner.id },
         include: [{
           model: Owner,
-          as: 'owner',
+          as: 'propertyOwner',
           include: [{
             model: User,
-            as: 'user',
+            as: 'ownerUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }]
         }],
@@ -238,10 +238,10 @@ class PropertyService {
         },
         include: [{
           model: Owner,
-          as: 'owner',
+          as: 'propertyOwner',
           include: [{
             model: User,
-            as: 'user',
+            as: 'ownerUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }]
         }],

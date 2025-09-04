@@ -67,6 +67,13 @@ router.post('/join-request', authenticateToken, requireTenantOrAdmin, validateJo
 router.get('/join-requests/my', authenticateToken, requireTenantOrAdmin, propertyController.getMyJoinRequests);
 
 /**
+ * @route   GET /api/property/join-requests/owner
+ * @desc    Get current owner's received join requests
+ * @access  Private
+ */
+router.get('/join-requests/owner', authenticateToken, requireOwnerOrAdmin, propertyController.getOwnerReceivedJoinRequests);
+
+/**
  * @route   PUT /api/property/join-request/:requestId/respond
  * @desc    Respond to a join request (owner functionality)
  * @access  Private

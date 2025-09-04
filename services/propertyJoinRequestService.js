@@ -220,6 +220,68 @@ class PropertyJoinRequestService {
   }
 
   /**
+   * Get join requests received by owner across all their property ads (owner view)
+   * @param {number} userId - Owner's user ID
+   * @returns {Array} Array of join requests
+   */
+  async getJoinRequestsByOwner(userId) {
+    try {
+      const user = await User.findByPk(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      let owner = await Owner.findOne({ where: { user_id: userId } });
+      if (!owner) {
+        // If not owner explicitly, still allow admin to view all
+        if (user.role !== 'admin') {
+          throw new Error('Owner record not found');
+        }
+      }
+
+      const whereOwnerProperty = owner ? { owner_id: owner.id } : {};
+
+      const requests = await PropertyJoinRequest.findAll({
+        include: [
+          {
+            model: PropertyAd,
+            as: 'propertyAd',
+            include: [{
+              model: Property,
+              as: 'property',
+              where: whereOwnerProperty,
+              required: true,
+              include: [{
+                model: Owner,
+                as: 'propertyOwner',
+                include: [{
+                  model: User,
+                  as: 'ownerUser',
+                  attributes: ['id', 'full_name', 'email', 'phone_no']
+                }]
+              }]
+            }]
+          },
+          {
+            model: Tenant,
+            as: 'tenant',
+            include: [{
+              model: User,
+              as: 'tenantUser',
+              attributes: ['id', 'full_name', 'email', 'phone_no']
+            }]
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      });
+
+      return requests;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Respond to a join request (approve/reject)
    * @param {number} requestId - Request ID
    * @param {string} status - 'approved' or 'rejected'

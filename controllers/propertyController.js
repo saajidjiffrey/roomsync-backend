@@ -323,6 +323,30 @@ class PropertyController {
   }
 
   /**
+   * Get join requests received by current owner
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   */
+  async getOwnerReceivedJoinRequests(req, res) {
+    try {
+      const userId = req.user.id;
+
+      const requests = await propertyJoinRequestService.getJoinRequestsByOwner(userId);
+
+      res.status(200).json({
+        success: true,
+        data: requests
+      });
+    } catch (error) {
+      console.error('Get owner received join requests error:', error.message);
+      res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  /**
    * Respond to a join request (owner functionality)
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object

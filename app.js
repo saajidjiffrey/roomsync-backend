@@ -12,6 +12,9 @@ app.use(cors());
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
+
 // Basic route
 app.get('/', (req, res) => {
   res.json({ message: 'Backend server is running!' });
@@ -35,6 +38,7 @@ app.use('/api/group', require('./routes/group'));
 app.use('/api/expense', require('./routes/expense'));
 app.use('/api/split', require('./routes/split'));
 app.use('/api/task', require('./routes/task'));
+app.use('/api/upload', require('./routes/upload'));
 
 // Initialize database and start server
 const startServer = async () => {

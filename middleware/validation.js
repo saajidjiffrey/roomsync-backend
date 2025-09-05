@@ -128,8 +128,8 @@ const validateProperty = [
     .withMessage('Space available must be a non-negative integer'),
   body('property_image')
     .optional()
-    .isURL()
-    .withMessage('Property image must be a valid URL'),
+    .isString()
+    .withMessage('Property image must be a string'),
   body('tags')
     .optional()
     .isArray()
@@ -212,8 +212,8 @@ const validateGroup = [
     .withMessage('Group description is required'),
   body('group_image_url')
     .optional()
-    .isURL()
-    .withMessage('Group image URL must be a valid URL'),
+    .isString()
+    .withMessage('Group image URL must be a string'),
   body('property_id')
     .isInt({ min: 1 })
     .withMessage('Valid property ID is required'),
@@ -236,8 +236,8 @@ const validateGroupUpdate = [
     .withMessage('Group description cannot be empty'),
   body('group_image_url')
     .optional()
-    .isURL()
-    .withMessage('Group image URL must be a valid URL'),
+    .isString()
+    .withMessage('Group image URL must be a string'),
   handleValidationErrors
 ];
 

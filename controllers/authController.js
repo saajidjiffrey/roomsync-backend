@@ -89,13 +89,14 @@ class AuthController {
   async updateProfile(req, res) {
     try {
       const userId = req.user.id;
-      const { full_name, phone_no, occupation, email } = req.body;
+      const { full_name, phone_no, occupation, email, profile_url } = req.body;
 
       const updated = await authService.updateUserProfile(userId, {
         full_name,
         phone_no,
         occupation,
-        email
+        email,
+        profile_url
       });
 
       res.status(200).json({

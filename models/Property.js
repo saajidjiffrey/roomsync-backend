@@ -47,10 +47,7 @@ const Property = sequelize.define('Property', {
   },
   property_image: {
     type: DataTypes.STRING(500),
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
+    allowNull: true
   },
   tags: {
     type: DataTypes.JSON,

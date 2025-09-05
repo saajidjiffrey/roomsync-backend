@@ -24,10 +24,7 @@ const Group = sequelize.define('Group', {
   },
   group_image_url: {
     type: DataTypes.STRING(500),
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
+    allowNull: true
   },
   property_id: {
     type: DataTypes.INTEGER,

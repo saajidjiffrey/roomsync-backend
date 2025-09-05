@@ -13,6 +13,8 @@ class GroupController {
       const { name, description, group_image_url, property_id } = req.body;
       const userId = req.user.id;
       
+      console.log('Received group_image_url:', group_image_url);
+      
       const groupData = {
         name,
         description,

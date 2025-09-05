@@ -31,10 +31,7 @@ const User = sequelize.define('User', {
   },
   profile_url: {
     type: DataTypes.STRING(500),
-    allowNull: true,
-    validate: {
-      isUrl: true
-    }
+    allowNull: true
   },
   email: {
     type: DataTypes.STRING(255),

@@ -214,7 +214,7 @@ class AuthService {
         throw new Error('User not found');
       }
 
-      const allowed = ['full_name', 'phone_no', 'occupation', 'email'];
+      const allowed = ['full_name', 'phone_no', 'occupation', 'email', 'profile_url'];
       for (const key of allowed) {
         if (typeof updates[key] !== 'undefined') {
           user[key] = updates[key];

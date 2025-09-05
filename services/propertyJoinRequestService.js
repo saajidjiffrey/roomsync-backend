@@ -4,6 +4,7 @@ const Property = require('../models/Property');
 const Tenant = require('../models/Tenant');
 const Owner = require('../models/Owner');
 const User = require('../models/User');
+const sequelize = require('../configs/database');
 
 class PropertyJoinRequestService {
   /**
@@ -233,47 +234,80 @@ class PropertyJoinRequestService {
 
       let owner = await Owner.findOne({ where: { user_id: userId } });
       if (!owner) {
-        // If not owner explicitly, still allow admin to view all
-        if (user.role !== 'admin') {
-          throw new Error('Owner record not found');
-        }
+        throw new Error('Owner record not found');
       }
 
-      const whereOwnerProperty = owner ? { owner_id: owner.id } : {};
+      const whereOwnerProperty = { owner_id: owner.id };
 
-      const requests = await PropertyJoinRequest.findAll({
-        include: [
-          {
-            model: PropertyAd,
-            as: 'propertyAd',
-            include: [{
-              model: Property,
-              as: 'property',
-              where: whereOwnerProperty,
-              required: true,
-              include: [{
-                model: Owner,
-                as: 'propertyOwner',
-                include: [{
-                  model: User,
-                  as: 'ownerUser',
-                  attributes: ['id', 'full_name', 'email', 'phone_no']
-                }]
-              }]
-            }]
-          },
-          {
-            model: Tenant,
-            as: 'tenant',
-            include: [{
-              model: User,
-              as: 'tenantUser',
-              attributes: ['id', 'full_name', 'email', 'phone_no']
-            }]
-          }
-        ],
-        order: [['createdAt', 'DESC']]
+      // Use raw SQL query to ensure proper filtering by owner
+      const results = await sequelize.query(`
+        SELECT 
+          pjr.id,
+          pjr.status,
+          pjr.move_in_date,
+          pjr.created_at,
+          pjr.updated_at,
+          pjr.property_ad_id,
+          pjr.tenant_id,
+          p.name as property_name,
+          p.id as property_id,
+          o.id as owner_id,
+          u.full_name as owner_name,
+          u.email as owner_email,
+          u.phone_no as owner_phone,
+          t.id as tenant_id,
+          tu.full_name as tenant_name,
+          tu.email as tenant_email,
+          tu.phone_no as tenant_phone
+        FROM property_join_requests pjr
+        JOIN property_ads pa ON pjr.property_ad_id = pa.id
+        JOIN properties p ON pa.property_id = p.id
+        JOIN owners o ON p.owner_id = o.id
+        JOIN users u ON o.user_id = u.id
+        JOIN tenants t ON pjr.tenant_id = t.id
+        JOIN users tu ON t.user_id = tu.id
+        WHERE o.user_id = ?
+        ORDER BY pjr.created_at DESC
+      `, {
+        replacements: [userId],
+        type: sequelize.QueryTypes.SELECT
       });
+
+      // Transform the raw results into the expected format
+      const requests = results.map(row => ({
+        id: row.id,
+        status: row.status,
+        move_in_date: row.move_in_date,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+        property_ad_id: row.property_ad_id,
+        tenant_id: row.tenant_id,
+        propertyAd: {
+          id: row.property_ad_id,
+          property: {
+            id: row.property_id,
+            name: row.property_name,
+            propertyOwner: {
+              id: row.owner_id,
+              ownerUser: {
+                id: userId,
+                full_name: row.owner_name,
+                email: row.owner_email,
+                phone_no: row.owner_phone
+              }
+            }
+          }
+        },
+        tenant: {
+          id: row.tenant_id,
+          tenantUser: {
+            id: row.tenant_id,
+            full_name: row.tenant_name,
+            email: row.tenant_email,
+            phone_no: row.tenant_phone
+          }
+        }
+      }));
 
       return requests;
     } catch (error) {

@@ -11,16 +11,18 @@ class GroupController {
       }
 
       const { name, description, group_image_url, property_id } = req.body;
+      const userId = req.user.id;
       
       const groupData = {
         name,
         description,
         group_image_url,
-        property_id
+        property_id,
+        created_by: userId
       };
 
       console.log('groupData', groupData);
-      const group = await groupService.createGroup(groupData);
+      const group = await groupService.createGroup(groupData, userId);
       
       res.status(201).json({
         success: true,
@@ -40,8 +42,9 @@ class GroupController {
   async getGroupsByProperty(req, res) {
     try {
       const { propertyId } = req.params;
+      const userId = req.user.id;
       
-      const groups = await groupService.getGroupsByProperty(propertyId);
+      const groups = await groupService.getGroupsByProperty(propertyId, userId);
       
       res.status(200).json({
         success: true,
@@ -208,6 +211,68 @@ class GroupController {
       });
     }
   }
+
+  // Get groups that the current user has joined
+  async getMyGroups(req, res) {
+    try {
+      const userId = req.user.id;
+      const groups = await groupService.getMyGroups(userId);
+      
+      res.status(200).json({
+        success: true,
+        data: groups
+      });
+    } catch (error) {
+      console.error('Error fetching my groups:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch my groups'
+      });
+    }
+  }
+
+  // Join a group
+  async joinGroup(req, res) {
+    try {
+      const { group_id } = req.body;
+      const userId = req.user.id;
+      
+      const group = await groupService.joinGroup(group_id, userId);
+      
+      res.status(200).json({
+        success: true,
+        message: 'Successfully joined group',
+        data: group
+      });
+    } catch (error) {
+      console.error('Error joining group:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to join group'
+      });
+    }
+  }
+
+  // Leave a group
+  async leaveGroup(req, res) {
+    try {
+      const { groupId } = req.params;
+      const userId = req.user.id;
+      
+      await groupService.leaveGroup(groupId, userId);
+      
+      res.status(200).json({
+        success: true,
+        message: 'Successfully left group'
+      });
+    } catch (error) {
+      console.error('Error leaving group:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to leave group'
+      });
+    }
+  }
 }
 
 const groupController = new GroupController();
@@ -216,6 +281,9 @@ const groupController = new GroupController();
 module.exports = {
   createGroup: groupController.createGroup.bind(groupController),
   getGroupsByProperty: groupController.getGroupsByProperty.bind(groupController),
+  getMyGroups: groupController.getMyGroups.bind(groupController),
+  joinGroup: groupController.joinGroup.bind(groupController),
+  leaveGroup: groupController.leaveGroup.bind(groupController),
   getGroupById: groupController.getGroupById.bind(groupController),
   updateGroup: groupController.updateGroup.bind(groupController),
   deleteGroup: groupController.deleteGroup.bind(groupController),

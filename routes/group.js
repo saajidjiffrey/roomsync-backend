@@ -9,9 +9,13 @@ const {
   validateAddTenantToGroup
 } = require('../middleware/validation');
 
-// Group routes
+// Group routes - specific routes first to avoid conflicts
 router.post('/', authenticateToken, requireTenantForGroup, validateGroup, groupController.createGroup);
 router.get('/property/:propertyId', authenticateToken, groupController.getGroupsByProperty);
+router.get('/my-groups', authenticateToken, groupController.getMyGroups);
+router.post('/join', authenticateToken, groupController.joinGroup);
+router.delete('/:groupId/leave', authenticateToken, groupController.leaveGroup);
+// General routes last
 router.get('/:groupId', authenticateToken, validateGroupId, groupController.getGroupById);
 router.put('/:groupId', authenticateToken, requireTenantForGroup, validateGroupId, validateGroupUpdate, groupController.updateGroup);
 router.delete('/:groupId', authenticateToken, requireTenantForGroup, validateGroupId, groupController.deleteGroup);

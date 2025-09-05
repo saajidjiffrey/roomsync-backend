@@ -187,14 +187,14 @@ class AuthService {
           where: { user_id: userId }
         });
         if (tenant) {
-          userData.tenant_profile = tenant;
+          userData.tenant_profile = tenant.toJSON();
         }
       } else if (user.role === 'owner') {
         const owner = await Owner.findOne({
           where: { user_id: userId }
         });
         if (owner) {
-          userData.owner_profile = owner;
+          userData.owner_profile = owner.toJSON();
         }
       }
 

@@ -326,6 +326,16 @@ class PropertyJoinRequestService {
         status
       });
 
+      // If approved, set the tenant's property_id
+      if (status === 'approved') {
+        const tenant = await Tenant.findByPk(joinRequest.tenant_id);
+        if (tenant) {
+          await tenant.update({
+            property_id: joinRequest.propertyAd.property.id
+          });
+        }
+      }
+
       return await this.getJoinRequestById(requestId);
     } catch (error) {
       throw error;

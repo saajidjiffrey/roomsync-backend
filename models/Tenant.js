@@ -18,6 +18,16 @@ const Tenant = sequelize.define('Tenant', {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
+  property_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'properties',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
   group_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
@@ -37,6 +47,7 @@ const Tenant = sequelize.define('Tenant', {
 Tenant.associate = function(models) {
   // Tenant associations
   Tenant.belongsTo(models.User, { foreignKey: 'user_id', as: 'tenantUser' });
+  Tenant.belongsTo(models.Property, { foreignKey: 'property_id', as: 'tenantProperty' });
   Tenant.belongsTo(models.Group, { foreignKey: 'group_id', as: 'tenantGroup' });
   Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'joinRequests' });
   Tenant.hasMany(models.Expense, { foreignKey: 'created_by', as: 'createdExpenses' });

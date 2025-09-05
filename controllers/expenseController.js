@@ -10,14 +10,30 @@ class ExpenseController {
         return res.status(400).json({ errors: errors.array() });
       }
 
+      // Check if user is in a group
+      if (!req.user.group_id) {
+        return res.status(400).json({
+          success: false,
+          message: 'You must be in a group to create expenses'
+        });
+      }
+
       const { category, title, description, receipt_total, group_id } = req.body;
+      
+      // Validate that the group_id matches the user's group
+      if (group_id && group_id !== req.user.group_id) {
+        return res.status(400).json({
+          success: false,
+          message: 'You can only create expenses for your own group'
+        });
+      }
       
       const expenseData = {
         category,
         title,
         description,
         receipt_total,
-        group_id,
+        group_id: group_id || req.user.group_id, // Use user's group_id if not provided
         created_by: req.user.tenant_id // Assuming user has tenant_id from auth middleware
       };
 

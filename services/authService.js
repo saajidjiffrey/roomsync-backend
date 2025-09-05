@@ -38,11 +38,26 @@ class AuthService {
       }
       // Note: 'admin' role doesn't need a separate record
       
+      // Prepare response user with tenant/owner profile if applicable
+      let responseUser = user.toJSON();
+
+      if (user.role === 'tenant') {
+        const tenant = await Tenant.findOne({ where: { user_id: user.id } });
+        if (tenant) {
+          responseUser.tenant_profile = tenant.toJSON();
+        }
+      } else if (user.role === 'owner') {
+        const owner = await Owner.findOne({ where: { user_id: user.id } });
+        if (owner) {
+          responseUser.owner_profile = owner.toJSON();
+        }
+      }
+
       // Generate JWT token
       const token = await this.generateToken(user);
       
       return {
-        user: user.toJSON(),
+        user: responseUser,
         token
       };
     } catch (error) {
@@ -73,11 +88,25 @@ class AuthService {
         throw new Error('Invalid email or password');
       }
 
+      // Prepare response user with tenant/owner profile if applicable
+      let responseUser = user.toJSON();
+      if (user.role === 'tenant') {
+        const tenant = await Tenant.findOne({ where: { user_id: user.id } });
+        if (tenant) {
+          responseUser.tenant_profile = tenant.toJSON();
+        }
+      } else if (user.role === 'owner') {
+        const owner = await Owner.findOne({ where: { user_id: user.id } });
+        if (owner) {
+          responseUser.owner_profile = owner.toJSON();
+        }
+      }
+
       // Generate JWT token
       const token = await this.generateToken(user);
       
       return {
-        user: user.toJSON(),
+        user: responseUser,
         token
       };
     } catch (error) {
@@ -104,6 +133,12 @@ class AuthService {
       });
       if (tenant) {
         payload.tenant_id = tenant.id;
+        if (tenant.property_id) {
+          payload.property_id = tenant.property_id;
+        }
+        if (tenant.group_id) {
+          payload.group_id = tenant.group_id;
+        }
       }
     } else if (user.role === 'owner') {
       const owner = await Owner.findOne({

@@ -40,28 +40,59 @@ async function runMigrations() {
     await sequelize.authenticate();
     console.log('Database connection established successfully.');
 
-    // Run all migrations in order
+    // Create SequelizeMeta table if it doesn't exist
+    await sequelize.getQueryInterface().createTable('SequelizeMeta', {
+      name: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        primaryKey: true
+      }
+    }, { ifNotExists: true });
+
+    // Get completed migrations
+    const [completedMigrations] = await sequelize.query('SELECT name FROM SequelizeMeta');
+    const completedNames = completedMigrations.map(row => row.name);
+    
+    console.log('Completed migrations:', completedNames);
+
+    // Define all migrations in order
+    const migrations = [
+      { name: '001-create-users-table', fn: createUsersTable },
+      { name: '002-create-owners-table', fn: createOwnersTable },
+      { name: '002-create-properties-table', fn: createPropertiesTable },
+      { name: '003-create-tenants-table', fn: createTenantsTable },
+      { name: '004-create-property-join-requests-table', fn: createPropertyJoinRequestsTable },
+      { name: '005-create-property-ads-table', fn: createPropertyAdsTable }
+    ];
+
+    // Run only pending migrations
     console.log('Running migrations...');
+    let hasNewMigrations = false;
     
-    console.log('Running migration: Create users table...');
-    await createUsersTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('Running migration: Create owners table...');
-    await createOwnersTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('Running migration: Create properties table...');
-    await createPropertiesTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('Running migration: Create tenants table...');
-    await createTenantsTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('Running migration: Create property join requests table...');
-    await createPropertyJoinRequestsTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('Running migration: Create property ads table...');
-    await createPropertyAdsTable.up(sequelize.getQueryInterface(), Sequelize);
-    
-    console.log('All migrations completed successfully!');
+    for (const migration of migrations) {
+      if (!completedNames.includes(migration.name)) {
+        console.log(`Running migration: ${migration.name}...`);
+        try {
+          await migration.fn.up(sequelize.getQueryInterface(), Sequelize);
+          await sequelize.query('INSERT INTO SequelizeMeta (name) VALUES (?)', {
+            replacements: [migration.name]
+          });
+          hasNewMigrations = true;
+          console.log(`Migration ${migration.name} completed successfully.`);
+        } catch (error) {
+          console.error(`Migration ${migration.name} failed:`, error.message);
+          // Continue with other migrations
+        }
+      } else {
+        console.log(`Migration ${migration.name} already completed, skipping.`);
+      }
+    }
+
+    if (hasNewMigrations) {
+      console.log('All pending migrations completed successfully!');
+    } else {
+      console.log('No pending migrations found. Database is up to date.');
+    }
 
     await sequelize.close();
     console.log('Database connection closed.');

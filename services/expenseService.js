@@ -6,12 +6,51 @@ const Split = require('../models/Split');
 const sequelize = require('../configs/database');
 
 class ExpenseService {
-  // Create a new expense
+  // Create a new expense with automatic split creation
   async createExpense(expenseData) {
+    const transaction = await sequelize.transaction();
+    
     try {
-      const expense = await Expense.create(expenseData);
-      return expense;
+      console.log('Creating expense with data:', expenseData);
+      
+      // Extract selected roommates and remove from expenseData
+      const { selected_roommates, ...expenseInfo } = expenseData;
+      
+      console.log('Expense info:', expenseInfo);
+      console.log('Selected roommates:', selected_roommates);
+      
+      // Create the expense
+      const expense = await Expense.create(expenseInfo, { transaction });
+      console.log('Created expense:', expense);
+      
+      // Calculate split amount per person
+      const splitAmount = expense.receipt_total / selected_roommates.length;
+      console.log('Split amount per person:', splitAmount);
+      
+      // Create splits for each selected roommate
+      const splitsData = selected_roommates.map(tenantId => ({
+        expense_id: expense.id,
+        split_amount: splitAmount,
+        assigned_to: tenantId,
+        assigned_by: expense.created_by, // The person who created the expense
+        status: tenantId === expense.created_by ? 'paid' : 'unpaid', // Creator's split is automatically paid
+        paid_date: tenantId === expense.created_by ? new Date() : null
+      }));
+      
+      console.log('Splits data to create:', splitsData);
+      
+      // Create all splits
+      const createdSplits = await Split.bulkCreate(splitsData, { transaction });
+      console.log('Created splits:', createdSplits);
+      
+      // Commit the transaction
+      await transaction.commit();
+      
+      // Return the expense with splits
+      return await this.getExpenseById(expense.id);
     } catch (error) {
+      // Rollback the transaction on error
+      await transaction.rollback();
       throw new Error(`Failed to create expense: ${error.message}`);
     }
   }
@@ -21,6 +60,7 @@ class ExpenseService {
     try {
       const expenses = await Expense.findAll({
         where: { group_id: groupId },
+        attributes: ['id', 'title', 'description', 'receipt_total', 'category', 'group_id', 'created_by', 'created_at', 'updated_at'],
         include: [
           {
             model: Group,
@@ -58,6 +98,7 @@ class ExpenseService {
         ],
         order: [['created_at', 'DESC']]
       });
+      
       return expenses;
     } catch (error) {
       throw new Error(`Failed to get expenses: ${error.message}`);

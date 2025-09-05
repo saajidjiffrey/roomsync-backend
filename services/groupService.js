@@ -234,8 +234,12 @@ class GroupService {
         throw new Error('Tenant record not found');
       }
 
+      // Find groups where the user is a member (has group_id set)
       const groups = await Group.findAll({
-        where: { property_id: tenant.property_id },
+        where: { 
+          property_id: tenant.property_id,
+          id: tenant.group_id // Only get the group the user is actually in
+        },
         include: [
           {
             model: Property,
@@ -256,17 +260,15 @@ class GroupService {
         ]
       });
 
-      // Mark which groups the user has joined
-      const groupsWithJoinStatus = groups.map(group => {
-        const isJoined = group.tenants.some(t => t.user_id === userId);
-        return {
-          ...group.toJSON(),
-          is_joined: isJoined,
-          member_count: group.tenants.length
-        };
-      });
+      // Return groups with member information
+      const groupsWithMembers = groups.map(group => ({
+        ...group.toJSON(),
+        is_joined: true, // User is always joined to their own groups
+        member_count: group.tenants.length,
+        members: group.tenants // Include members array
+      }));
 
-      return groupsWithJoinStatus;
+      return groupsWithMembers;
     } catch (error) {
       throw new Error(`Failed to get my groups: ${error.message}`);
     }

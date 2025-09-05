@@ -50,12 +50,12 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
@@ -65,7 +65,7 @@ module.exports = {
     // Add indexes for better performance
     await queryInterface.addIndex('properties', ['owner_id']);
     await queryInterface.addIndex('properties', ['space_available']);
-    await queryInterface.addIndex('properties', ['createdAt']);
+    await queryInterface.addIndex('properties', ['created_at']);
   },
 
   down: async (queryInterface, Sequelize) => {

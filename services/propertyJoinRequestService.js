@@ -85,16 +85,7 @@ class PropertyJoinRequestService {
             as: 'propertyAd',
             include: [{
               model: Property,
-              as: 'property',
-              include: [{
-                model: Owner,
-                as: 'propertyOwner',
-                include: [{
-                  model: User,
-                  as: 'ownerUser',
-                  attributes: ['id', 'full_name', 'email', 'phone_no']
-                }]
-              }]
+              as: 'property'
             }]
           },
           {
@@ -198,16 +189,7 @@ class PropertyJoinRequestService {
             as: 'propertyAd',
             include: [{
               model: Property,
-              as: 'property',
-              include: [{
-                model: Owner,
-                as: 'propertyOwner',
-                include: [{
-                  model: User,
-                  as: 'ownerUser',
-                  attributes: ['id', 'full_name', 'email', 'phone_no']
-                }]
-              }]
+              as: 'property'
             }]
           }
         ],

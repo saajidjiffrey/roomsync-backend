@@ -15,6 +15,10 @@ const {
 router.post('/', authenticateToken, requireTenantForGroup, validateSplit, splitController.createSplit);
 router.post('/expense/:expenseId/bulk', authenticateToken, requireTenantForGroup, validateExpenseId, validateCreateSplits, splitController.createSplitsForExpense);
 router.get('/expense/:expenseId', authenticateToken, validateExpenseId, splitController.getSplitsByExpense);
+router.get('/tenant/to-pay', authenticateToken, splitController.getToPaySplits);
+router.get('/tenant/to-receive', authenticateToken, splitController.getToReceiveSplits);
+router.get('/tenant/history', authenticateToken, splitController.getSplitHistory);
+router.get('/tenant/summary', authenticateToken, splitController.getSplitSummary);
 router.get('/tenant/:tenantId', authenticateToken, splitController.getSplitsByTenant);
 router.get('/:splitId', authenticateToken, validateSplitId, splitController.getSplitById);
 router.put('/:splitId', authenticateToken, requireTenantForGroup, validateSplitId, validateSplitUpdate, splitController.updateSplit);

@@ -33,6 +33,14 @@ const createPropertiesTable = require('../migrations/002-create-properties-table
 const createTenantsTable = require('../migrations/003-create-tenants-table');
 const createPropertyJoinRequestsTable = require('../migrations/004-create-property-join-requests-table');
 const createPropertyAdsTable = require('../migrations/005-create-property-ads-table');
+const createGroupsTable = require('../migrations/006-create-groups-table');
+const createExpensesTable = require('../migrations/007-create-expenses-table');
+const createSplitsTable = require('../migrations/008-create-splits-table');
+const addGroupIdToTenants = require('../migrations/009-add-group-id-to-tenants');
+const createTasksTable = require('../migrations/010-create-tasks-table');
+const addPropertyIdToTenants = require('../migrations/011-add-property-id-to-tenants');
+const addAssignedByToSplits = require('../migrations/012-add-assigned-by-to-splits');
+const fixTimestampColumns = require('../migrations/013-fix-timestamp-columns');
 
 async function runMigrations() {
   try {
@@ -62,7 +70,15 @@ async function runMigrations() {
       { name: '002-create-properties-table', fn: createPropertiesTable },
       { name: '003-create-tenants-table', fn: createTenantsTable },
       { name: '004-create-property-join-requests-table', fn: createPropertyJoinRequestsTable },
-      { name: '005-create-property-ads-table', fn: createPropertyAdsTable }
+      { name: '005-create-property-ads-table', fn: createPropertyAdsTable },
+      { name: '006-create-groups-table', fn: createGroupsTable },
+      { name: '007-create-expenses-table', fn: createExpensesTable },
+      { name: '008-create-splits-table', fn: createSplitsTable },
+      { name: '009-add-group-id-to-tenants', fn: addGroupIdToTenants },
+      { name: '010-create-tasks-table', fn: createTasksTable },
+      { name: '011-add-property-id-to-tenants', fn: addPropertyIdToTenants },
+      { name: '012-add-assigned-by-to-splits', fn: addAssignedByToSplits },
+      { name: '013-fix-timestamp-columns', fn: fixTimestampColumns }
     ];
 
     // Run only pending migrations

@@ -39,12 +39,12 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
@@ -55,7 +55,7 @@ module.exports = {
     await queryInterface.addIndex('property_join_requests', ['property_ad_id']);
     await queryInterface.addIndex('property_join_requests', ['tenant_id']);
     await queryInterface.addIndex('property_join_requests', ['status']);
-    await queryInterface.addIndex('property_join_requests', ['createdAt']);
+    await queryInterface.addIndex('property_join_requests', ['created_at']);
     
     // Add unique constraint to prevent duplicate requests
     await queryInterface.addIndex('property_join_requests', ['property_ad_id', 'tenant_id'], {

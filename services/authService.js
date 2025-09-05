@@ -205,6 +205,30 @@ class AuthService {
   }
 
   /**
+   * Update user profile fields
+   */
+  async updateUserProfile(userId, updates) {
+    try {
+      const user = await User.findByPk(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const allowed = ['full_name', 'phone_no', 'occupation', 'email'];
+      for (const key of allowed) {
+        if (typeof updates[key] !== 'undefined') {
+          user[key] = updates[key];
+        }
+      }
+      await user.save();
+
+      return this.getUserById(user.id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Update user password
    * @param {number} userId - User ID
    * @param {string} currentPassword - Current password

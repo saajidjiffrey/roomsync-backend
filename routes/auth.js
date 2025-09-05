@@ -38,6 +38,13 @@ router.post('/refresh', validateTokenRefresh, authController.refreshToken);
 router.get('/profile', authenticateToken, authController.getProfile);
 
 /**
+ * @route   PUT /api/auth/profile
+ * @desc    Update current user profile
+ * @access  Private
+ */
+router.put('/profile', authenticateToken, authController.updateProfile);
+
+/**
  * @route   PUT /api/auth/password
  * @desc    Update user password
  * @access  Private

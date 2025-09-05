@@ -266,6 +266,84 @@ class SplitController {
       });
     }
   }
+
+  // Get splits that the current user needs to pay
+  async getToPaySplits(req, res) {
+    try {
+      const userId = req.user.id;
+      
+      const splits = await splitService.getToPaySplits(userId);
+      
+      res.status(200).json({
+        success: true,
+        data: splits
+      });
+    } catch (error) {
+      console.error('Error fetching to pay splits:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch to pay splits'
+      });
+    }
+  }
+
+  // Get splits that the current user should receive
+  async getToReceiveSplits(req, res) {
+    try {
+      const userId = req.user.id;
+      
+      const splits = await splitService.getToReceiveSplits(userId);
+      
+      res.status(200).json({
+        success: true,
+        data: splits
+      });
+    } catch (error) {
+      console.error('Error fetching to receive splits:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch to receive splits'
+      });
+    }
+  }
+
+  // Get split history for the current user
+  async getSplitHistory(req, res) {
+    try {
+      const userId = req.user.id;
+      const splits = await splitService.getSplitHistory(userId);
+      
+      res.status(200).json({
+        success: true,
+        data: splits
+      });
+    } catch (error) {
+      console.error('Error fetching split history:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch split history'
+      });
+    }
+  }
+
+  // Get split summary for the current user
+  async getSplitSummary(req, res) {
+    try {
+      const userId = req.user.id;
+      const summary = await splitService.getSplitSummary(userId);
+      
+      res.status(200).json({
+        success: true,
+        data: summary
+      });
+    } catch (error) {
+      console.error('Error fetching split summary:', error);
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Failed to fetch split summary'
+      });
+    }
+  }
 }
 
 const splitController = new SplitController();
@@ -276,6 +354,10 @@ module.exports = {
   createSplitsForExpense: splitController.createSplitsForExpense.bind(splitController),
   getSplitsByExpense: splitController.getSplitsByExpense.bind(splitController),
   getSplitsByTenant: splitController.getSplitsByTenant.bind(splitController),
+  getToPaySplits: splitController.getToPaySplits.bind(splitController),
+  getToReceiveSplits: splitController.getToReceiveSplits.bind(splitController),
+  getSplitHistory: splitController.getSplitHistory.bind(splitController),
+  getSplitSummary: splitController.getSplitSummary.bind(splitController),
   getSplitById: splitController.getSplitById.bind(splitController),
   updateSplit: splitController.updateSplit.bind(splitController),
   updateSplitStatus: splitController.updateSplitStatus.bind(splitController),

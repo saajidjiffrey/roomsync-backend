@@ -29,6 +29,16 @@ const Split = sequelize.define('Split', {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   },
+  assigned_by: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'tenants',
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
   paid_date: {
     type: DataTypes.DATE,
     allowNull: true
@@ -53,6 +63,7 @@ Split.associate = function(models) {
   // Split associations
   Split.belongsTo(models.Expense, { foreignKey: 'expense_id', as: 'expense' });
   Split.belongsTo(models.Tenant, { foreignKey: 'assigned_to', as: 'assignedTenant' });
+  Split.belongsTo(models.Tenant, { foreignKey: 'assigned_by', as: 'assignedByTenant' });
 };
 
 module.exports = Split;

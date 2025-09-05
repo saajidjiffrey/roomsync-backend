@@ -52,6 +52,7 @@ Tenant.associate = function(models) {
   Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'joinRequests' });
   Tenant.hasMany(models.Expense, { foreignKey: 'created_by', as: 'createdExpenses' });
   Tenant.hasMany(models.Split, { foreignKey: 'assigned_to', as: 'assignedSplits' });
+  Tenant.hasMany(models.Split, { foreignKey: 'assigned_by', as: 'createdSplits' });
   Tenant.hasMany(models.Task, { foreignKey: 'assigned_to', as: 'assignedTasks' });
   Tenant.hasMany(models.Task, { foreignKey: 'created_by', as: 'createdTasks' });
 };

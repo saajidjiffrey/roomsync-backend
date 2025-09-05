@@ -82,6 +82,37 @@ class AuthController {
   }
 
   /**
+   * Update current user profile
+   * @param {Object} req
+   * @param {Object} res
+   */
+  async updateProfile(req, res) {
+    try {
+      const userId = req.user.id;
+      const { full_name, phone_no, occupation, email } = req.body;
+
+      const updated = await authService.updateUserProfile(userId, {
+        full_name,
+        phone_no,
+        occupation,
+        email
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully',
+        data: updated
+      });
+    } catch (error) {
+      console.error('Update profile error:', error.message);
+      res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  /**
    * Update user password
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object

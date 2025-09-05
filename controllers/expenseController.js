@@ -18,7 +18,7 @@ class ExpenseController {
         });
       }
 
-      const { category, title, description, receipt_total, group_id } = req.body;
+      const { category, title, description, receipt_total, group_id, selected_roommates } = req.body;
       
       // Validate that the group_id matches the user's group
       if (group_id && group_id !== req.user.group_id) {
@@ -28,13 +28,30 @@ class ExpenseController {
         });
       }
       
+      // Validate selected roommates
+      if (!selected_roommates || !Array.isArray(selected_roommates) || selected_roommates.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'You must select at least one roommate to split the expense with'
+        });
+      }
+      
+      // Validate that the creator is included in selected roommates
+      if (!selected_roommates.includes(req.user.tenant_id)) {
+        return res.status(400).json({
+          success: false,
+          message: 'You must include yourself in the selected roommates'
+        });
+      }
+      
       const expenseData = {
         category,
         title,
         description,
         receipt_total,
         group_id: group_id || req.user.group_id, // Use user's group_id if not provided
-        created_by: req.user.tenant_id // Assuming user has tenant_id from auth middleware
+        created_by: req.user.tenant_id, // Assuming user has tenant_id from auth middleware
+        selected_roommates // Include selected roommates for split creation
       };
 
       const expense = await expenseService.createExpense(expenseData);

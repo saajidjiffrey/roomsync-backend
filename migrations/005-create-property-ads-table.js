@@ -29,12 +29,12 @@ module.exports = {
         allowNull: false,
         defaultValue: true
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
@@ -44,7 +44,7 @@ module.exports = {
     // Add indexes for better performance
     await queryInterface.addIndex('property_ads', ['property_id']);
     await queryInterface.addIndex('property_ads', ['is_active']);
-    await queryInterface.addIndex('property_ads', ['createdAt']);
+    await queryInterface.addIndex('property_ads', ['created_at']);
   },
 
   down: async (queryInterface, Sequelize) => {

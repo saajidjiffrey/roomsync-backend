@@ -1,4 +1,6 @@
 const expenseService = require('../services/expenseService');
+const notificationService = require('../services/notificationService');
+const socketService = require('../services/socketService');
 const { validationResult } = require('express-validator');
 
 class ExpenseController {
@@ -55,6 +57,29 @@ class ExpenseController {
       };
 
       const expense = await expenseService.createExpense(expenseData);
+      
+      // Send notifications to group members about the new expense
+      try {
+        const notifications = await notificationService.createExpenseCreatedNotification(
+          expense,
+          expense.Group,
+          expense.Tenant
+        );
+        
+        // Send real-time notifications
+        notifications.forEach(notification => {
+          socketService.sendNotificationToTenant(notification.recipient_id, {
+            id: notification.id,
+            message: notification.message,
+            type: notification.type,
+            created_at: notification.created_at,
+            metadata: notification.metadata
+          });
+        });
+      } catch (notificationError) {
+        console.error('Error sending expense notifications:', notificationError);
+        // Don't fail the expense creation if notifications fail
+      }
       
       res.status(201).json({
         success: true,

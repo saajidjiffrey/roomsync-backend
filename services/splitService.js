@@ -38,7 +38,6 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             attributes: ['id', 'title', 'receipt_total']
           },
           {
@@ -47,7 +46,16 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
+              }
+            ]
+          },
+          {
+            model: Tenant,
+            as: 'assignedByTenant',
+            include: [
+              {
+                model: User,
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -69,11 +77,9 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             include: [
               {
                 model: Group,
-                as: 'group',
                 attributes: ['id', 'name']
               }
             ]
@@ -94,7 +100,6 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             attributes: ['id', 'title', 'receipt_total']
           },
           {
@@ -103,8 +108,17 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
+              }
+            ]
+          },
+          {
+            model: Tenant,
+            as: 'assignedByTenant',
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }
@@ -188,8 +202,17 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
+              }
+            ]
+          },
+          {
+            model: Tenant,
+            as: 'assignedByTenant',
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }
@@ -240,7 +263,6 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             attributes: ['id', 'title', 'description', 'receipt_total', 'category', 'created_by', 'group_id']
           },
           {
@@ -249,8 +271,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           },
@@ -260,13 +281,12 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }
         ],
-        order: [['created_at', 'DESC']        ]
+        order: [['created_at', 'DESC']]
       });
 
       return splits;
@@ -299,7 +319,6 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             attributes: ['id', 'title', 'description', 'receipt_total', 'category', 'created_by', 'group_id']
           },
           {
@@ -308,8 +327,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           },
@@ -319,13 +337,12 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }
         ],
-        order: [['created_at', 'DESC']        ]
+        order: [['created_at', 'DESC']]
       });
 
       return splits;
@@ -357,7 +374,6 @@ class SplitService {
         include: [
           {
             model: Expense,
-            as: 'expense',
             attributes: ['id', 'title', 'description', 'receipt_total', 'category', 'created_by', 'group_id']
           },
           {
@@ -366,8 +382,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           },
@@ -377,8 +392,7 @@ class SplitService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }

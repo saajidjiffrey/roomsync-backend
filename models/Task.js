@@ -90,7 +90,7 @@ const Task = sequelize.define('Task', {
 // Static method to define associations
 Task.associate = function(models) {
   // Task associations
-  Task.belongsTo(models.Group, { foreignKey: 'group_id', as: 'group' });
+  Task.belongsTo(models.Group, { foreignKey: 'group_id' });
   Task.belongsTo(models.Tenant, { foreignKey: 'assigned_to', as: 'assignedTenant' });
   Task.belongsTo(models.Tenant, { foreignKey: 'created_by', as: 'createdByTenant' });
 };

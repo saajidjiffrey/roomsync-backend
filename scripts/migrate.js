@@ -41,6 +41,7 @@ const createTasksTable = require('../migrations/010-create-tasks-table');
 const addPropertyIdToTenants = require('../migrations/011-add-property-id-to-tenants');
 const addAssignedByToSplits = require('../migrations/012-add-assigned-by-to-splits');
 const fixTimestampColumns = require('../migrations/013-fix-timestamp-columns');
+const createNotificationsTable = require('../migrations/014-create-notifications-table');
 
 async function runMigrations() {
   try {
@@ -78,7 +79,8 @@ async function runMigrations() {
       { name: '010-create-tasks-table', fn: createTasksTable },
       { name: '011-add-property-id-to-tenants', fn: addPropertyIdToTenants },
       { name: '012-add-assigned-by-to-splits', fn: addAssignedByToSplits },
-      { name: '013-fix-timestamp-columns', fn: fixTimestampColumns }
+      { name: '013-fix-timestamp-columns', fn: fixTimestampColumns },
+      { name: '014-create-notifications-table', fn: createNotificationsTable }
     ];
 
     // Run only pending migrations

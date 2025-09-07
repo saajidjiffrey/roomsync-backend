@@ -46,15 +46,17 @@ const Tenant = sequelize.define('Tenant', {
 // Static method to define associations
 Tenant.associate = function(models) {
   // Tenant associations
-  Tenant.belongsTo(models.User, { foreignKey: 'user_id', as: 'tenantUser' });
-  Tenant.belongsTo(models.Property, { foreignKey: 'property_id', as: 'tenantProperty' });
-  Tenant.belongsTo(models.Group, { foreignKey: 'group_id', as: 'tenantGroup' });
-  Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id', as: 'joinRequests' });
-  Tenant.hasMany(models.Expense, { foreignKey: 'created_by', as: 'createdExpenses' });
-  Tenant.hasMany(models.Split, { foreignKey: 'assigned_to', as: 'assignedSplits' });
-  Tenant.hasMany(models.Split, { foreignKey: 'assigned_by', as: 'createdSplits' });
-  Tenant.hasMany(models.Task, { foreignKey: 'assigned_to', as: 'assignedTasks' });
-  Tenant.hasMany(models.Task, { foreignKey: 'created_by', as: 'createdTasks' });
+  Tenant.belongsTo(models.User, { foreignKey: 'user_id' });
+  Tenant.belongsTo(models.Property, { foreignKey: 'property_id' });
+  Tenant.belongsTo(models.Group, { foreignKey: 'group_id' });
+  Tenant.hasMany(models.PropertyJoinRequest, { foreignKey: 'tenant_id' });
+  Tenant.hasMany(models.Expense, { foreignKey: 'created_by' });
+  Tenant.hasMany(models.Split, { foreignKey: 'assigned_to' });
+  Tenant.hasMany(models.Split, { foreignKey: 'assigned_by' });
+  Tenant.hasMany(models.Task, { foreignKey: 'assigned_to' });
+  Tenant.hasMany(models.Task, { foreignKey: 'created_by' });
+  Tenant.hasMany(models.Notification, { foreignKey: 'recipient_id', as: 'receivedNotifications' });
+  Tenant.hasMany(models.Notification, { foreignKey: 'sender_id', as: 'sentNotifications' });
 };
 
 module.exports = Tenant;

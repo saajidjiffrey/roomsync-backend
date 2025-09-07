@@ -50,8 +50,8 @@ const PropertyJoinRequest = sequelize.define('PropertyJoinRequest', {
 // Static method to define associations
 PropertyJoinRequest.associate = function(models) {
   // PropertyJoinRequest associations
-  PropertyJoinRequest.belongsTo(models.PropertyAd, { foreignKey: 'property_ad_id', as: 'propertyAd' });
-  PropertyJoinRequest.belongsTo(models.Tenant, { foreignKey: 'tenant_id', as: 'tenant' });
+  PropertyJoinRequest.belongsTo(models.PropertyAd, { foreignKey: 'property_ad_id' });
+  PropertyJoinRequest.belongsTo(models.Tenant, { foreignKey: 'tenant_id' });
 };
 
 module.exports = PropertyJoinRequest;

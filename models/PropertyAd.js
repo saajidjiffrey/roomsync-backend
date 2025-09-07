@@ -56,8 +56,8 @@ const PropertyAd = sequelize.define('PropertyAd', {
 // Static method to define associations
 PropertyAd.associate = function(models) {
   // PropertyAd associations
-  PropertyAd.belongsTo(models.Property, { foreignKey: 'property_id', as: 'property' });
-  PropertyAd.hasMany(models.PropertyJoinRequest, { foreignKey: 'property_ad_id', as: 'joinRequests' });
+  PropertyAd.belongsTo(models.Property, { foreignKey: 'property_id' });
+  PropertyAd.hasMany(models.PropertyJoinRequest, { foreignKey: 'property_ad_id' });
 };
 
 module.exports = PropertyAd;

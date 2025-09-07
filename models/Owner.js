@@ -26,7 +26,7 @@ const Owner = sequelize.define('Owner', {
 // Static method to define associations
 Owner.associate = function(models) {
   // Owner associations
-  Owner.belongsTo(models.User, { foreignKey: 'user_id', as: 'ownerUser' });
+  Owner.belongsTo(models.User, { foreignKey: 'user_id' });
   Owner.hasMany(models.Property, { foreignKey: 'owner_id' });
 };
 

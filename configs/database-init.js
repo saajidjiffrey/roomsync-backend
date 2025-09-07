@@ -9,6 +9,7 @@ const Group = require('../models/Group');
 const Expense = require('../models/Expense');
 const Split = require('../models/Split');
 const Task = require('../models/Task');
+const Notification = require('../models/Notification');
 
 // Import all models here
 const models = {
@@ -21,11 +22,20 @@ const models = {
   Group,
   Expense,
   Split,
-  Task
+  Task,
+  Notification
 };
+
+// Flag to prevent multiple association definitions
+let associationsDefined = false;
 
 // Define associations after all models are loaded
 const defineAssociations = () => {
+  if (associationsDefined) {
+    console.log('Model associations already defined, skipping...');
+    return;
+  }
+  
   // Call each model's associate method to define associations
   Object.values(models).forEach(model => {
     if (model.associate) {
@@ -33,6 +43,7 @@ const defineAssociations = () => {
     }
   });
   
+  associationsDefined = true;
   console.log('Model associations defined successfully.');
 };
 
@@ -51,9 +62,9 @@ const initializeDatabase = async () => {
       // Define associations
       defineAssociations();
       
-      console.log('Syncing database models...');
-      await sequelize.sync({ alter: true });
-      console.log('Database models synchronized successfully.');
+      console.log('Skipping database sync due to MySQL key limit...');
+      // await sequelize.sync({ alter: true });
+      // console.log('Database models synchronized successfully.');
       
       return true;
     } catch (error) {

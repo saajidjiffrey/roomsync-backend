@@ -48,7 +48,6 @@ class TaskService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name', 'description']
           },
           {
@@ -57,8 +56,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           },
@@ -68,8 +66,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }
@@ -132,7 +129,6 @@ class TaskService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
@@ -141,8 +137,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           },
@@ -152,8 +147,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }
@@ -199,7 +193,6 @@ class TaskService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
@@ -208,8 +201,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           },
@@ -219,8 +211,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }
@@ -266,7 +257,6 @@ class TaskService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
@@ -275,8 +265,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           },
@@ -286,8 +275,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }
@@ -463,8 +451,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }
@@ -508,8 +495,7 @@ class TaskService {
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email']
+                attributes: ['id', 'full_name', 'email', 'profile_url']
               }
             ]
           }

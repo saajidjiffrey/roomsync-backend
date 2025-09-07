@@ -44,10 +44,10 @@ const Group = sequelize.define('Group', {
 // Static method to define associations
 Group.associate = function(models) {
   // Group associations
-  Group.belongsTo(models.Property, { foreignKey: 'property_id', as: 'property' });
-  Group.hasMany(models.Expense, { foreignKey: 'group_id', as: 'expenses' });
-  Group.hasMany(models.Tenant, { foreignKey: 'group_id', as: 'tenants' });
-  Group.hasMany(models.Task, { foreignKey: 'group_id', as: 'tasks' });
+  Group.belongsTo(models.Property, { foreignKey: 'property_id' });
+  Group.hasMany(models.Expense, { foreignKey: 'group_id' });
+  Group.hasMany(models.Tenant, { foreignKey: 'group_id' });
+  Group.hasMany(models.Task, { foreignKey: 'group_id' });
 };
 
 module.exports = Group;

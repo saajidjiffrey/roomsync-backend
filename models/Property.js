@@ -77,9 +77,9 @@ const Property = sequelize.define('Property', {
 // Static method to define associations
 Property.associate = function(models) {
   // Property associations
-  Property.belongsTo(models.Owner, { foreignKey: 'owner_id', as: 'propertyOwner' });
-  Property.hasMany(models.PropertyAd, { foreignKey: 'property_id', as: 'ads' });
-  Property.hasMany(models.Group, { foreignKey: 'property_id', as: 'groups' });
+  Property.belongsTo(models.Owner, { foreignKey: 'owner_id' });
+  Property.hasMany(models.PropertyAd, { foreignKey: 'property_id' });
+  Property.hasMany(models.Group, { foreignKey: 'property_id' });
 };
 
 module.exports = Property;

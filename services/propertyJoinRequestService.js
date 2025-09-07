@@ -35,7 +35,6 @@ class PropertyJoinRequestService {
       const propertyAd = await PropertyAd.findByPk(requestData.property_ad_id, {
         include: [{
           model: Property,
-          as: 'property'
         }]
       });
       
@@ -82,18 +81,14 @@ class PropertyJoinRequestService {
         include: [
           {
             model: PropertyAd,
-            as: 'propertyAd',
             include: [{
               model: Property,
-              as: 'property'
             }]
           },
           {
             model: Tenant,
-            as: 'tenant',
             include: [{
               model: User,
-              as: 'tenantUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }
@@ -127,7 +122,6 @@ class PropertyJoinRequestService {
       const propertyAd = await PropertyAd.findByPk(propertyAdId, {
         include: [{
           model: Property,
-          as: 'property'
         }]
       });
       
@@ -137,7 +131,7 @@ class PropertyJoinRequestService {
 
       if (user.role !== 'admin') {
         const owner = await Owner.findOne({ where: { user_id: userId } });
-        if (!owner || propertyAd.property.owner_id !== owner.id) {
+        if (!owner || propertyAd.Property.owner_id !== owner.id) {
           throw new Error('Only the property owner or admin can view join requests');
         }
       }
@@ -147,10 +141,8 @@ class PropertyJoinRequestService {
         include: [
           {
             model: Tenant,
-            as: 'tenant',
             include: [{
               model: User,
-              as: 'tenantUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }
@@ -186,10 +178,8 @@ class PropertyJoinRequestService {
         include: [
           {
             model: PropertyAd,
-            as: 'propertyAd',
             include: [{
               model: Property,
-              as: 'property'
             }]
           }
         ],
@@ -240,7 +230,8 @@ class PropertyJoinRequestService {
           t.id as tenant_id,
           tu.full_name as tenant_name,
           tu.email as tenant_email,
-          tu.phone_no as tenant_phone
+          tu.phone_no as tenant_phone,
+          tu.profile_url as tenant_profile_url
         FROM property_join_requests pjr
         JOIN property_ads pa ON pjr.property_ad_id = pa.id
         JOIN properties p ON pa.property_id = p.id
@@ -286,7 +277,8 @@ class PropertyJoinRequestService {
             id: row.tenant_id,
             full_name: row.tenant_name,
             email: row.tenant_email,
-            phone_no: row.tenant_phone
+            phone_no: row.tenant_phone,
+            profile_url: row.tenant_profile_url
           }
         }
       }));
@@ -314,10 +306,8 @@ class PropertyJoinRequestService {
       const joinRequest = await PropertyJoinRequest.findByPk(requestId, {
         include: [{
           model: PropertyAd,
-          as: 'propertyAd',
           include: [{
             model: Property,
-            as: 'property'
           }]
         }]
       });
@@ -329,7 +319,7 @@ class PropertyJoinRequestService {
       // Verify user is the property owner or admin
       if (user.role !== 'admin') {
         const owner = await Owner.findOne({ where: { user_id: userId } });
-        if (!owner || joinRequest.propertyAd.property.owner_id !== owner.id) {
+        if (!owner || joinRequest.PropertyAd.Property.owner_id !== owner.id) {
           throw new Error('Only the property owner or admin can respond to join requests');
         }
       }
@@ -347,7 +337,7 @@ class PropertyJoinRequestService {
         const tenant = await Tenant.findByPk(joinRequest.tenant_id);
         if (tenant) {
           await tenant.update({
-            property_id: joinRequest.propertyAd.property.id
+            property_id: joinRequest.PropertyAd.Property.id
           });
         }
       }
@@ -375,15 +365,12 @@ class PropertyJoinRequestService {
         include: [
           {
             model: PropertyAd,
-            as: 'propertyAd',
             include: [{
               model: Property,
-              as: 'property'
             }]
           },
           {
             model: Tenant,
-            as: 'tenant'
           }
         ]
       });
@@ -402,7 +389,7 @@ class PropertyJoinRequestService {
         } else if (user.role === 'owner') {
           // Owner can only delete requests for their properties
           const owner = await Owner.findOne({ where: { user_id: userId } });
-          if (!owner || joinRequest.propertyAd.property.owner_id !== owner.id) {
+          if (!owner || joinRequest.PropertyAd.Property.owner_id !== owner.id) {
             throw new Error('You can only delete join requests for your properties');
           }
         }

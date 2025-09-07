@@ -62,9 +62,9 @@ const Expense = sequelize.define('Expense', {
 // Static method to define associations
 Expense.associate = function(models) {
   // Expense associations
-  Expense.belongsTo(models.Group, { foreignKey: 'group_id', as: 'group' });
-  Expense.belongsTo(models.Tenant, { foreignKey: 'created_by', as: 'creator' });
-  Expense.hasMany(models.Split, { foreignKey: 'expense_id', as: 'splits' });
+  Expense.belongsTo(models.Group, { foreignKey: 'group_id' });
+  Expense.belongsTo(models.Tenant, { foreignKey: 'created_by' });
+  Expense.hasMany(models.Split, { foreignKey: 'expense_id' });
 };
 
 module.exports = Expense;

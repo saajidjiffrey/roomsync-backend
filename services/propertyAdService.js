@@ -69,13 +69,10 @@ class PropertyAdService {
         where: whereClause,
         include: [{
           model: Property,
-          as: 'property',
           include: [{
             model: Owner,
-            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -99,13 +96,10 @@ class PropertyAdService {
       const propertyAd = await PropertyAd.findByPk(adId, {
         include: [{
           model: Property,
-          as: 'property',
           include: [{
             model: Owner,
-            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -134,7 +128,6 @@ class PropertyAdService {
       const propertyAd = await PropertyAd.findByPk(adId, {
         include: [{
           model: Property,
-          as: 'property'
         }]
       });
       
@@ -150,14 +143,14 @@ class PropertyAdService {
 
       if (user.role !== 'admin') {
         const owner = await Owner.findOne({ where: { user_id: userId } });
-        if (!owner || propertyAd.property.owner_id !== owner.id) {
+        if (!owner || propertyAd.Property.owner_id !== owner.id) {
           throw new Error('Only the property owner or admin can update this ad');
         }
       }
 
       // If updating number_of_spaces_looking_for, validate against property's space_available
       if (updateData.number_of_spaces_looking_for && 
-          updateData.number_of_spaces_looking_for > propertyAd.property.space_available) {
+          updateData.number_of_spaces_looking_for > propertyAd.Property.space_available) {
         throw new Error('Number of spaces looking for cannot exceed available space in property');
       }
 
@@ -180,7 +173,6 @@ class PropertyAdService {
       const propertyAd = await PropertyAd.findByPk(adId, {
         include: [{
           model: Property,
-          as: 'property'
         }]
       });
       
@@ -196,7 +188,7 @@ class PropertyAdService {
 
       if (user.role !== 'admin') {
         const owner = await Owner.findOne({ where: { user_id: userId } });
-        if (!owner || propertyAd.property.owner_id !== owner.id) {
+        if (!owner || propertyAd.Property.owner_id !== owner.id) {
           throw new Error('Only the property owner or admin can delete this ad');
         }
       }
@@ -225,14 +217,11 @@ class PropertyAdService {
       const propertyAds = await PropertyAd.findAll({
         include: [{
           model: Property,
-          as: 'property',
           where: { owner_id: owner.id },
           include: [{
             model: Owner,
-            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -265,7 +254,6 @@ class PropertyAdService {
         },
         include: [{
           model: Property,
-          as: 'property',
           where: {
             coordinates: {
               [require('sequelize').Op.ne]: null
@@ -273,10 +261,8 @@ class PropertyAdService {
           },
           include: [{
             model: Owner,
-            as: 'propertyOwner',
             include: [{
               model: User,
-              as: 'ownerUser',
               attributes: ['id', 'full_name', 'email', 'phone_no']
             }]
           }]
@@ -286,13 +272,13 @@ class PropertyAdService {
 
       // Filter property ads within radius
       const filteredPropertyAds = propertyAds.filter(ad => {
-        if (!ad.property.coordinates) return false;
+        if (!ad.Property.coordinates) return false;
         
         const distance = this.calculateDistance(
           location.latitude,
           location.longitude,
-          ad.property.coordinates.latitude,
-          ad.property.coordinates.longitude
+          ad.Property.coordinates.latitude,
+          ad.Property.coordinates.longitude
         );
         
         return distance <= radius;

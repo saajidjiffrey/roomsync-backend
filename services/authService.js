@@ -12,7 +12,6 @@ class AuthService {
    */
   async register(userData) {
     try {
-      // Check if user already exists
       const existingUser = await User.findOne({
         where: {
           email: userData.email
@@ -23,10 +22,8 @@ class AuthService {
         throw new Error('User with this email already exists');
       }
 
-      // Create new user
       const user = await User.create(userData);
       
-      // Create corresponding Tenant or Owner record based on role
       if (user.role === 'tenant') {
         await Tenant.create({
           user_id: user.id
@@ -36,9 +33,7 @@ class AuthService {
           user_id: user.id
         });
       }
-      // Note: 'admin' role doesn't need a separate record
       
-      // Prepare response user with tenant/owner profile if applicable
       let responseUser = user.toJSON();
 
       if (user.role === 'tenant') {

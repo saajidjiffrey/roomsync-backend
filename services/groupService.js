@@ -25,16 +25,13 @@ class GroupService {
         include: [
           {
             model: Property,
-            as: 'property',
             attributes: ['id', 'name', 'address']
           },
           {
             model: Tenant,
-            as: 'tenants',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -45,7 +42,7 @@ class GroupService {
       return {
         ...fullGroup.toJSON(),
         is_joined: true,
-        member_count: fullGroup.tenants.length
+        member_count: fullGroup.Tenants ? fullGroup.Tenants.length : 0
       };
     } catch (error) {
       throw new Error(`Failed to create group: ${error.message}`);
@@ -60,16 +57,13 @@ class GroupService {
         include: [
           {
             model: Property,
-            as: 'property',
             attributes: ['id', 'name', 'address']
           },
           {
             model: Tenant,
-            as: 'tenants',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -80,11 +74,11 @@ class GroupService {
       // If userId is provided, mark which groups the user has joined
       if (userId) {
         const groupsWithJoinStatus = groups.map(group => {
-          const isJoined = group.tenants.some(t => t.user_id === userId);
+          const isJoined = group.Tenants ? group.Tenants.some(t => t.user_id === userId) : false;
           return {
             ...group.toJSON(),
             is_joined: isJoined,
-            member_count: group.tenants.length
+            member_count: group.Tenants ? group.Tenants.length : 0
           };
         });
         return groupsWithJoinStatus;
@@ -103,16 +97,13 @@ class GroupService {
         include: [
           {
             model: Property,
-            as: 'property',
             attributes: ['id', 'name', 'address']
           },
           {
             model: Tenant,
-            as: 'tenants',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -211,7 +202,6 @@ class GroupService {
         include: [
           {
             model: User,
-            as: 'tenantUser',
             attributes: ['id', 'full_name', 'email', 'phone_no']
           }
         ]
@@ -243,17 +233,14 @@ class GroupService {
         include: [
           {
             model: Property,
-            as: 'property',
             attributes: ['id', 'name', 'address']
           },
           {
             model: Tenant,
-            as: 'tenants',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
-                attributes: ['id', 'full_name', 'email', 'phone_no']
+                attributes: ['id', 'full_name', 'email', 'phone_no', 'profile_url']
               }
             ]
           }
@@ -264,8 +251,8 @@ class GroupService {
       const groupsWithMembers = groups.map(group => ({
         ...group.toJSON(),
         is_joined: true, // User is always joined to their own groups
-        member_count: group.tenants.length,
-        members: group.tenants // Include members array
+        member_count: group.Tenants ? group.Tenants.length : 0,
+        members: group.Tenants || [] // Include members array
       }));
 
       return groupsWithMembers;
@@ -316,16 +303,13 @@ class GroupService {
         include: [
           {
             model: Property,
-            as: 'property',
             attributes: ['id', 'name', 'address']
           },
           {
             model: Tenant,
-            as: 'tenants',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
@@ -336,7 +320,7 @@ class GroupService {
       return {
         ...updatedGroup.toJSON(),
         is_joined: true,
-        member_count: updatedGroup.tenants.length
+        member_count: updatedGroup.Tenants ? updatedGroup.Tenants.length : 0
       };
     } catch (error) {
       throw new Error(`Failed to join group: ${error.message}`);

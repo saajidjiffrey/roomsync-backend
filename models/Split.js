@@ -61,7 +61,7 @@ const Split = sequelize.define('Split', {
 // Static method to define associations
 Split.associate = function(models) {
   // Split associations
-  Split.belongsTo(models.Expense, { foreignKey: 'expense_id', as: 'expense' });
+  Split.belongsTo(models.Expense, { foreignKey: 'expense_id' });
   Split.belongsTo(models.Tenant, { foreignKey: 'assigned_to', as: 'assignedTenant' });
   Split.belongsTo(models.Tenant, { foreignKey: 'assigned_by', as: 'assignedByTenant' });
 };

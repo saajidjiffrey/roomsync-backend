@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
 const { initializeDatabase } = require('./configs/database-init');
 const { errorHandler, notFound } = require('./utils/errorHandler');
+const socketService = require('./services/socketService');
+const taskReminderService = require('./services/taskReminderService');
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -29,6 +33,29 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Admin route to trigger database sync
+app.post('/admin/sync-db', async (req, res) => {
+  try {
+    const { sequelize } = require('./configs/database-init');
+    console.log('Starting database sync...');
+    await sequelize.sync({ alter: true });
+    console.log('Database sync completed successfully!');
+    res.json({ 
+      success: true, 
+      message: 'Database synchronized successfully!',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Database sync failed:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Database sync failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/protected', require('./routes/protected'));
@@ -39,6 +66,7 @@ app.use('/api/expense', require('./routes/expense'));
 app.use('/api/split', require('./routes/split'));
 app.use('/api/task', require('./routes/task'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/notifications', require('./routes/notification'));
 
 // Initialize database and start server
 const startServer = async () => {
@@ -46,18 +74,22 @@ const startServer = async () => {
     console.log('Starting server...');
     
     // Start the server first
-    app.listen(PORT, () => {
+    server.listen(PORT, async () => {
       console.log(`Server running on port ${PORT}`);
+      
+      // Initialize Socket.IO and services after server is started
+      socketService.initialize(server);
+      taskReminderService.start();
+      
+      // Try to initialize database in background
+      console.log('Attempting to connect to database...');
+      const dbInitialized = await initializeDatabase();
+      if (dbInitialized) {
+        console.log('Database connected successfully!');
+      } else {
+        console.log('Database connection failed, but server is running. API endpoints may not work properly.');
+      }
     });
-    
-    // Try to initialize database in background
-    console.log('Attempting to connect to database...');
-    const dbInitialized = await initializeDatabase();
-    if (dbInitialized) {
-      console.log('Database connected successfully!');
-    } else {
-      console.log('Database connection failed, but server is running. API endpoints may not work properly.');
-    }
     
     // Error handling middleware (must be last)
     app.use(notFound);
@@ -66,8 +98,12 @@ const startServer = async () => {
   } catch (error) {
     console.error('Error starting server:', error);
     // Still start the server even if database fails
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server running on port ${PORT} (database connection failed)`);
+      
+      // Initialize Socket.IO and services after server is started
+      socketService.initialize(server);
+      taskReminderService.start();
     });
     
     // Error handling middleware (must be last)

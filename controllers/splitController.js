@@ -1,4 +1,6 @@
 const splitService = require('../services/splitService');
+const notificationService = require('../services/notificationService');
+const socketService = require('../services/socketService');
 const { validationResult } = require('express-validator');
 
 class SplitController {
@@ -180,6 +182,30 @@ class SplitController {
       const { status, paid_date } = req.body;
       
       const split = await splitService.updateSplitStatus(splitId, status, paid_date);
+      
+      // Send notification if split was marked as paid
+      if (status === 'paid') {
+        try {
+          const notification = await notificationService.createSplitPaidNotification(
+            split,
+            split.expense,
+            split.assignedTenant,
+            split.expense.creator
+          );
+          
+          // Send real-time notification
+          socketService.sendNotificationToTenant(notification.recipient_id, {
+            id: notification.id,
+            message: notification.message,
+            type: notification.type,
+            created_at: notification.created_at,
+            metadata: notification.metadata
+          });
+        } catch (notificationError) {
+          console.error('Error sending split paid notification:', notificationError);
+          // Don't fail the split update if notifications fail
+        }
+      }
       
       res.status(200).json({
         success: true,

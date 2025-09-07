@@ -64,23 +64,19 @@ class ExpenseService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
             model: Tenant,
-            as: 'creator',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
           },
           {
             model: Split,
-            as: 'splits',
             include: [
               {
                 model: Tenant,
@@ -88,7 +84,16 @@ class ExpenseService {
                 include: [
                   {
                     model: User,
-                    as: 'tenantUser',
+                    attributes: ['id', 'full_name', 'email', 'phone_no']
+                  }
+                ]
+              },
+              {
+                model: Tenant,
+                as: 'assignedByTenant',
+                include: [
+                  {
+                    model: User,
                     attributes: ['id', 'full_name', 'email', 'phone_no']
                   }
                 ]
@@ -112,23 +117,19 @@ class ExpenseService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
             model: Tenant,
-            as: 'creator',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]
           },
           {
             model: Split,
-            as: 'splits',
             include: [
               {
                 model: Tenant,
@@ -136,7 +137,16 @@ class ExpenseService {
                 include: [
                   {
                     model: User,
-                    as: 'tenantUser',
+                    attributes: ['id', 'full_name', 'email', 'phone_no']
+                  }
+                ]
+              },
+              {
+                model: Tenant,
+                as: 'assignedByTenant',
+                include: [
+                  {
+                    model: User,
                     attributes: ['id', 'full_name', 'email', 'phone_no']
                   }
                 ]
@@ -197,16 +207,13 @@ class ExpenseService {
         include: [
           {
             model: Group,
-            as: 'group',
             attributes: ['id', 'name']
           },
           {
             model: Tenant,
-            as: 'creator',
             include: [
               {
                 model: User,
-                as: 'tenantUser',
                 attributes: ['id', 'full_name', 'email', 'phone_no']
               }
             ]

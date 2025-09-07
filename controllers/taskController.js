@@ -1,4 +1,6 @@
 const taskService = require('../services/taskService');
+const notificationService = require('../services/notificationService');
+const socketService = require('../services/socketService');
 const { validationResult } = require('express-validator');
 
 class TaskController {
@@ -22,6 +24,27 @@ class TaskController {
       };
 
       const task = await taskService.createTask(taskData, req.user.tenant_id);
+      
+      // Send notification to the assigned user
+      try {
+        const notification = await notificationService.createTaskAssignedNotification(
+          task,
+          task.assignedTenant,
+          task.creator
+        );
+        
+        // Send real-time notification
+        socketService.sendNotificationToTenant(notification.recipient_id, {
+          id: notification.id,
+          message: notification.message,
+          type: notification.type,
+          created_at: notification.created_at,
+          metadata: notification.metadata
+        });
+      } catch (notificationError) {
+        console.error('Error sending task assigned notification:', notificationError);
+        // Don't fail the task creation if notifications fail
+      }
       
       res.status(201).json({
         success: true,
